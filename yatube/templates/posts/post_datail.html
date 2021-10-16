@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}
+  {{ title }} {{ author.get_full_name }}
+{% endblock %}
+{% block content %}
+{% load thumbnail %} 
+<div class='container py-5'>
+  <div class="row">
+    <aside class="col-12 col-md-3">
+      <ul class="list-group text-xl-right">
+        <li class="list-group-item">
+          Опубликованно {{ post.pub_date|date:"d E Y" }}
+        </li>
+        {% if post.group %}  
+          <li class="list-group-item">
+            <a href="{% url 'posts:group_list' post.group.slug %}"
+            style='text-decoration: none;'>
+              <font color="#000000">Группа: {{ post.group }}</font>
+            </a>
+          </li>
+        {% endif %}
+        <li class="list-group-item">
+          <a href="{% url 'posts:profile' post.author.username %}"
+          style='text-decoration: none;'>
+            <font color="#000000">Автор: {{ post.author.get_full_name }}</font>
+          </a>
+        </li>
+        <li class="list-group-item d-flex 
+        justify-content-between align-items-center">
+          Всего постов автора: {{ count_posts }} 
+        </li>
+        <li class="list-group-item">
+          Комментарии: {{ post.comment.count }}
+        </li>
+      </ul>
+    </aside>
+    <article class="col-12 col-md-9">
+      {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
+        <img class="card-img my-2" src="{{ im.url }}">
+      {% endthumbnail %}
+      <p>
+        <font size="4">{{ post.text }}</font>
+      </p>
+      {% include 'posts/includes/create_comment.html' %}
+    </article>
+  </div> 
+</div>
+{% endblock %}

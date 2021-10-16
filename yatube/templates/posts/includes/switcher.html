@@ -1,0 +1,26 @@
+{% if user.is_authenticated %}
+  <div class="row my-3">
+    {% with request.resolver_match.view_name as view_name %}
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a 
+            class="nav-link {% if view_name == 'posts:index' %}
+            active{% endif %}"
+            href="{% url 'posts:index' %}"
+          >
+            <font color="#000000" size="4">Все авторы</font>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a 
+             class="nav-link {% if view_name == 'posts:follow_index' %}
+             active{% endif %}"
+             href="{% url 'posts:follow_index' %}"
+          >
+            <font color="#000000" size="4">Избранные авторы</font>
+          </a>
+        </li>
+      </ul>
+    {% endwith %}
+  </div>
+{% endif %}
