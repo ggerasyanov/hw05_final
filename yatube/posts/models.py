@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import UniqueConstraint
 from django.db.models.fields.related import ForeignKey
 
 User = get_user_model()
