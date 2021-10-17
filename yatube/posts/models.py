@@ -87,13 +87,14 @@ class Follow(models.Model):
     подписался и пользователя на которого подписались."""
     user = ForeignKey(
         User,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='follower',
-        null=True,
     )
     author = ForeignKey(
         User,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='following',
-        null=True,
     )
+
+    class Meta:
+        UniqueConstraint(fields=['user', 'author'], name='unique_subscription')

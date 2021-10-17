@@ -6,7 +6,7 @@ from posts.models import Group, Post
 User = get_user_model()
 
 
-class StaticURLTests(TestCase):
+class TestСorrectnessURL(TestCase):
     """Класс для проверки правильной работы url-ов"""
     @classmethod
     def setUpClass(cls):
@@ -21,13 +21,13 @@ class StaticURLTests(TestCase):
         cls.post = Post.objects.create(
             text='Тестовый текст',
             author=cls.user,
-            group=StaticURLTests.group
+            group=TestСorrectnessURL.group
         )
 
     def setUp(self):
         cache.clear()
         self.guest_client = Client()
-        self.user = StaticURLTests.user
+        self.user = TestСorrectnessURL.user
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
@@ -90,7 +90,7 @@ class StaticURLTests(TestCase):
     def test_access_edit_author_post(self):
         """Проверяет перенаправление на post_datail если
         пользователь не является автором."""
-        if StaticURLTests.post.author != self.user:
+        if TestСorrectnessURL.post.author != self.user:
             response = self.authorized_client.get('/posts/1/edit/',
                                                   follow=True)
             self.assertRedirects(

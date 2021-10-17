@@ -343,11 +343,10 @@ class TestFollowViews(TestCase):
     def test_follow_index_post_follow_user(self):
         """Проверяет отображение постов авторов на которых есть подписка."""
         post_count = Post.objects.count()
-        reverse_name_follow = reverse(
-            'posts:profile_follow',
-            args=[TestFollowViews.author]
+        Follow.objects.create(
+            user=TestFollowViews.user,
+            author=TestFollowViews.author,
         )
-        self.authorized_client.get(reverse_name_follow)
         reverse_name_index = reverse(
             'posts:follow_index'
         )
@@ -361,11 +360,6 @@ class TestFollowViews(TestCase):
     def test_follow_index_post_unfollow_user(self):
         """Проверяет что не нужные посты не появляются в подписках."""
         post_count = Post.objects.count()
-        reverse_name_unfollow = reverse(
-            'posts:profile_unfollow',
-            args=[TestFollowViews.author]
-        )
-        self.authorized_client.get(reverse_name_unfollow)
         reverse_name_index = reverse(
             'posts:follow_index'
         )
