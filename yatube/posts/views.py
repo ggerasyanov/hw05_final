@@ -96,7 +96,7 @@ def post_edit(request, post_id):
         request.POST or None,
         files=request.FILES or None,
         instance=post,
-    ) 
+    )
     if form.is_valid():
         form.save()
         return redirect('posts:post_datail', post_id=post.id)
@@ -165,6 +165,7 @@ def profile_follow(request, username):
     if author != user:
         Follow.objects.get_or_create(user=user, author=author)
     return redirect('posts:follow_index')
+
 
 @login_required
 def profile_unfollow(request, username):

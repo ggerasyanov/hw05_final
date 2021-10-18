@@ -33,7 +33,8 @@ class FollowAdmin(admin.ModelAdmin):
 
 class CommentAdmin(admin.ModelAdmin):
     """Класс для удобной работы в админке. Изменяет вид отображения
-    комментариев. Добавляет поиск и возможность сортировки для модели Follow."""
+    комментариев. Добавляет поиск и возможность сортировки
+    для модели Follow."""
     list_display = ('post', 'author', 'text', 'created')
     search_fields = ('text', 'author')
     list_filter = ('post', 'author', 'created')
