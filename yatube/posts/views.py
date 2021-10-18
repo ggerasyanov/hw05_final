@@ -55,7 +55,10 @@ def profile(request, username):
     # авторизован ли пользователь. Если делать это условие вместе, то
     # check_follow будет выбивать ошибку
     if request.user.is_authenticated:
-        check_follow = Follow.objects.get(user=request.user, author=author.id)
+        check_follow = Follow.objects.filter(
+            user=request.user,
+            author=author.id
+        )
         if check_follow.exists():
             following = True
     context = {
@@ -171,5 +174,5 @@ def profile_follow(request, username):
 def profile_unfollow(request, username):
     """Функция для отписки от автора."""
     author = get_object_or_404(User, username=username)
-    Follow.objects.get(user=request.user, author=author).delete()
+    Follow.objects.filter(user=request.user, author=author).delete()
     return redirect('posts:follow_index')
