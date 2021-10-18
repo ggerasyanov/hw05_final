@@ -55,14 +55,9 @@ def profile(request, username):
     # авторизован ли пользователь. Если делать это условие вместе, то
     # check_follow будет выбивать ошибку
     if request.user.is_authenticated:
-        check_follow = Follow.objects.filter(
-            user=request.user
-        ).filter(
-            author=author.id
-        )
+        check_follow = Follow.objects.get(user=request.user, author=author.id)
         if check_follow.exists():
             following = True
-
     context = {
         'username': username,
         'count_posts': count_posts,
@@ -95,25 +90,21 @@ def post_edit(request, post_id):
     """Рендерит страницу редактирования поста."""
     template = 'posts/create_post.html'
     post = get_object_or_404(Post, pk=post_id)
-    context = {
-        'is_edit': True,
-        'id': post.id,
-    }
     if post.author != request.user:
         return redirect('posts:post_datail', post_id=post.id)
-    if request.method != 'POST':
-        form = PostForm(instance=post)
-        context['form'] = form
-        return render(request, template, context)
     form = PostForm(
         request.POST or None,
         files=request.FILES or None,
         instance=post,
-    )
+    ) 
     if form.is_valid():
         form.save()
-        context['form'] = form
         return redirect('posts:post_datail', post_id=post.id)
+    context = {
+        'is_edit': True,
+        'id': post.id,
+        'form': form
+    }
     return render(request, template, context)
 
 
@@ -121,21 +112,16 @@ def post_edit(request, post_id):
 def post_create(request):
     """Рендерит страницу создания поста."""
     template = 'posts/create_post.html'
-    context = {
-        'is_edit': False
-    }
     form = PostForm(request.POST or None, files=request.FILES or None)
-    # Если убрать данную строку проект не проходит тестирование
-    if request.method == 'POST':
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-            context['form'] = form
-            return redirect('posts:profile', username=post.author)
-        return render(request, template, context)
-    form = PostForm()
-    context['form'] = form
+    if form.is_valid():
+        post = form.save(commit=False)
+        post.author = request.user
+        post.save()
+        return redirect('posts:profile', username=post.author)
+    context = {
+        'is_edit': False,
+        'form': form,
+    }
     return render(request, template, context)
 
 
@@ -175,22 +161,14 @@ def follow_index(request):
 def profile_follow(request, username):
     """Функция для подписки на автора."""
     author = get_object_or_404(User, username=username)
-    check_follow = Follow.objects.filter(
-        user=request.user
-    ).filter(
-        author=author.id
-    )
-    if not check_follow and username != request.user.username:
-        Follow.objects.create(
-            user=request.user,
-            author=author,
-        )
+    user = request.user
+    if author != user:
+        Follow.objects.get_or_create(user=user, author=author)
     return redirect('posts:follow_index')
-
 
 @login_required
 def profile_unfollow(request, username):
     """Функция для отписки от автора."""
     author = get_object_or_404(User, username=username)
-    Follow.objects.filter(user=request.user).filter(author=author).delete()
+    Follow.objects.get(user=request.user, author=author).delete()
     return redirect('posts:follow_index')
