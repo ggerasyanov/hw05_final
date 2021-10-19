@@ -162,7 +162,7 @@ def profile_follow(request, username):
     user = request.user
     if author != user:
         Follow.objects.get_or_create(user=user, author=author)
-    return redirect('posts:follow_index')
+    return redirect('posts:profile', username=username)
 
 
 @login_required
@@ -170,4 +170,4 @@ def profile_unfollow(request, username):
     """Функция для отписки от автора."""
     author = get_object_or_404(User, username=username)
     Follow.objects.filter(user=request.user, author=author).delete()
-    return redirect('posts:follow_index')
+    return redirect('posts:profile', username=username)

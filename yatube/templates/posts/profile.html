@@ -10,13 +10,13 @@
     {% if request.user.is_authenticated %}
       {% if username != request.user.username %}
         {% if following %}
-          <a class="btn btn-outline-secondary"
+          <a class="btn btn-outline-danger"
             href="{% url 'posts:profile_unfollow' author.username %}" 
             role="button">
             Отписаться
           </a>
         {% else %}
-          <a class="btn btn-outline-secondary"
+          <a class="btn btn-outline-primary"
             href="{% url 'posts:profile_follow' author.username %}" 
             role="button">
             Подписаться
@@ -39,7 +39,7 @@
           <img class="card-img my-2" src="{{ im.url }}">
         {% endthumbnail %}
         <p>{{ post.text }} <br>
-          <a href="{% url 'posts:post_datail' post.id %}">
+          <a href="{% url 'posts:post_edit' post.id %}">
             <font color="#000000">Подробнее</font>
           </a>
         </p>
