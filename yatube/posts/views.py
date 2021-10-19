@@ -51,16 +51,11 @@ def profile(request, username):
     page_obj = collect_paginator(post_list, request)
     count_posts = post_list.count()
     following = False
-    # Условия не получится объединить, так как сначало нужно узнать
-    # авторизован ли пользователь. Если делать это условие вместе, то
-    # check_follow будет выбивать ошибку
-    if request.user.is_authenticated:
-        check_follow = Follow.objects.filter(
+    if request.user.is_authenticated and Follow.objects.filter(
             user=request.user,
             author=author.id
-        )
-        if check_follow.exists():
-            following = True
+    ).exists():
+        following = True
     context = {
         'username': username,
         'count_posts': count_posts,
@@ -75,8 +70,8 @@ def datail(request, post_id):
     """Рендерит страницу подробной информации о посте."""
     template = 'posts/post_datail.html'
     post = get_object_or_404(Post, id=post_id)
-    author = get_object_or_404(Post, id=post_id)
-    count_posts = Post.objects.filter(author=author.author).count()
+    author = get_object_or_404(User, username=post.author.username)
+    count_posts = author.posts.all().count()
     comments = post.comment.all()
     form = CommentForm()
     context = {
