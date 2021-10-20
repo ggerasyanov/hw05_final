@@ -29,10 +29,9 @@
             Профиль
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <p class="dropdown-item" >Привет {{ user.username }}<hr></p>
+            <p class="dropdown-item" >Привет {{ user.first_name }}<hr></p>
             <a class="dropdown-item" href="{% url 'posts:post_create' %}">
               Новая запись</a>
-            <a class="dropdown-item" href="">Изменить пароль</a>
             <a class="dropdown-item" href="{% url 'users:logout' %}">
               Выйти</a>
           </div>

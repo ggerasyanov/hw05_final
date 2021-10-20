@@ -39,8 +39,15 @@
         <img class="card-img my-2" src="{{ im.url }}">
       {% endthumbnail %}
       <p>
-        <font size="4">{{ post.text }}</font>
+        <font size="4">{{ post.text|linebreaks }}</font>
       </p>
+      {% if author == request.user %}
+        <a class="btn btn-outline-primary"
+          href="{% url 'posts:post_edit' post.id %}" 
+          role="button">
+          Редактировать
+        </a>
+      {% endif %}
       {% include 'posts/includes/create_comment.html' %}
     </article>
   </div> 

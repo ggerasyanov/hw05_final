@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.cache import cache_page
 
 from yatube.settings import PAGE_SIZE
 
@@ -16,7 +15,6 @@ def collect_paginator(post_list, request):
     return page_obj
 
 
-@cache_page(20, key_prefix='index_page')
 def index(request):
     """Рендерит страницу со всеми записями из базы данных."""
     template = 'posts/index.html'
@@ -50,6 +48,7 @@ def profile(request, username):
     post_list = Post.objects.filter(author=author)
     page_obj = collect_paginator(post_list, request)
     count_posts = post_list.count()
+    following_count = Follow.objects.filter(author=author).count
     following = False
     if request.user.is_authenticated and Follow.objects.filter(
             user=request.user,
@@ -61,7 +60,8 @@ def profile(request, username):
         'count_posts': count_posts,
         'page_obj': page_obj,
         'author': author,
-        'following': following
+        'following': following,
+        'following_count': following_count,
     }
     return render(request, template, context)
 
@@ -79,6 +79,7 @@ def datail(request, post_id):
         'count_posts': count_posts,
         'comments': comments,
         'form': form,
+        'author': author,
     }
     return render(request, template, context)
 
@@ -88,8 +89,6 @@ def post_edit(request, post_id):
     """Рендерит страницу редактирования поста."""
     template = 'posts/create_post.html'
     post = get_object_or_404(Post, pk=post_id)
-    if post.author != request.user:
-        return redirect('posts:post_datail', post_id=post.id)
     form = PostForm(
         request.POST or None,
         files=request.FILES or None,
