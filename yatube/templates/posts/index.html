@@ -9,6 +9,8 @@
     <font size="7">Последние обновления</font><br>
     {% if request.user.is_authenticated %}
       {% include 'posts/includes/switcher.html' %}
+    {% else %}
+      <hr>
     {% endif %}
     {% cache 20 index_page %}
      {% for post in page_obj %}
